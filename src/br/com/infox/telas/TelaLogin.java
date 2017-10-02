@@ -1,12 +1,43 @@
 package br.com.infox.telas;
 import java.sql.*;
 import br.com.infox.dal.ModuloConexao;
+import javax.swing.JOptionPane;
 
 public class TelaLogin extends javax.swing.JFrame {
     Connection conexao = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
     
+    public void logar ()
+    {
+        String sql = "select * from tbusuarios where login=? and senha=?";
+        
+        try {
+            //as linas abaixo preparam a consulta ao banco de dados
+            pst = conexao.prepareStatement(sql);
+            //pega os valores dos campos de texto e substitue nas interrogaçoes 
+            pst.setString(1, jtfUsuario.getText());
+            pst.setString(2, jpfSenha.getText());
+            //executa a query
+            rs = pst.executeQuery();
+            //se existir usuario e senha correspondentes
+            if (rs.next())
+            {
+                TelaPrincipal principal = new TelaPrincipal();
+                principal.setVisible(true);
+                //fecha a Tela de Login
+                this.dispose();
+                //fecha conexao com o banco
+                conexao.close();
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(null, "Usuário e/ou senha inválido!");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
     public TelaLogin() {
         initComponents();
         
@@ -121,6 +152,7 @@ public class TelaLogin extends javax.swing.JFrame {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         // TODO add your handling code here:
+        logar();
     }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
